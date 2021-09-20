@@ -127,11 +127,9 @@ def delete_tags_for_document(doc):
 	frappe.db.sql("""DELETE FROM `tabTag Link` WHERE `document_type`=%s AND `document_name`=%s""", (doc.doctype, doc.name))
 
 def update_tags(doc, tags):
-	"""
-		Adds tags for documents
-		:param doc: Document to be added to global tags
-	"""
+	"""Adds tags for documents
 
+<<<<<<< HEAD
 	new_tags = list(set([tag.strip() for tag in tags.split(",") if tag]))
 
 	for tag in new_tags:
@@ -146,11 +144,17 @@ def update_tags(doc, tags):
 				"tag": tag
 			}).insert(ignore_permissions=True)
 
+=======
+	:param doc: Document to be added to global tags
+	"""
+	new_tags = {tag.strip() for tag in tags.split(",") if tag}
+>>>>>>> e4ef3a40c5 (fix: Only system manager is able to create tags)
 	existing_tags = [tag.tag for tag in frappe.get_list("Tag Link", filters={
 			"document_type": doc.doctype,
 			"document_name": doc.name
 		}, fields=["tag"])]
 
+<<<<<<< HEAD
 	deleted_tags = get_deleted_tags(new_tags, existing_tags)
 
 	if deleted_tags:
@@ -163,6 +167,27 @@ def get_deleted_tags(new_tags, existing_tags):
 
 def delete_tag_for_document(dt, dn, tag):
 	frappe.db.sql("""DELETE FROM `tabTag Link` WHERE `document_type`=%s AND `document_name`=%s AND tag=%s""", (dt, dn, tag))
+=======
+	added_tags = set(new_tags) - set(existing_tags)
+	for tag in added_tags:
+		frappe.get_doc({
+			"doctype": "Tag Link",
+			"document_type": doc.doctype,
+			"document_name": doc.name,
+			"parenttype": doc.doctype,
+			"parent": doc.name,
+			"title": doc.get_title() or '',
+			"tag": tag
+		}).insert(ignore_permissions=True)
+
+	deleted_tags = list(set(existing_tags) - set(new_tags))
+	for tag in deleted_tags:
+		frappe.db.delete("Tag Link", {
+			"document_type": doc.doctype,
+			"document_name": doc.name,
+			"tag": tag
+		})
+>>>>>>> e4ef3a40c5 (fix: Only system manager is able to create tags)
 
 @frappe.whitelist()
 def get_documents_for_tag(tag):
