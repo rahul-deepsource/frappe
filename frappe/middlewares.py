@@ -27,3 +27,6 @@ class StaticDataMiddleware(SharedDataMiddleware):
 
 	
 # test
+if __name__ == '__main__':
+	raise NotImplemented
+
