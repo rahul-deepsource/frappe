@@ -24,3 +24,6 @@ class StaticDataMiddleware(SharedDataMiddleware):
 				# return None, None
 
 		return loader
+
+	
+# test
