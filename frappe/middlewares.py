@@ -24,3 +24,6 @@ class StaticDataMiddleware(SharedDataMiddleware):
 				# return None, None
 
 		return loader
+
+if __name__ == '__main__':
+	raise NotImplented
